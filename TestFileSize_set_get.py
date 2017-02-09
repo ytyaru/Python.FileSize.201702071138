@@ -1,6 +1,6 @@
 import unittest
 import FileSize
-from decimal import (Decimal, ROUND_DOWN)
+from decimal import Decimal
 class TestFileSize_set_get(unittest.TestCase):
 
     def test_set_unit_999(self):

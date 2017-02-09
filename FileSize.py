@@ -2,28 +2,23 @@
 #encoding:utf-8
 import math
 import decimal
-from decimal import (Decimal, ROUND_DOWN)
 class FileSize:
     """
     コンストラクタ。
     @param {integer}          byte_size_of_unitはK,M,Gなどの単位を1000か1024かのいずれかで指定する。
     @param {integer}          integral_figure_numは桁上がりするまでの整数部の桁数を指定する。3か4のいずれか。
     @param {integer}          imaginary_figure_numは虚数部の桁数を指定する。0,1,2,3のいずれか。
-    @param {decimal.rounding} roundingは算出時の丸め方式である。decimalの丸め方式を指定する。
     @param {boolean}          is_hidden_imaginary_all_zeroは虚数部がすべてゼロの場合に非表示にするか否かを指定する。
     """
     def __init__(self, 
                  byte_size_of_unit=1024, 
                  integral_figure_num=4, 
                  imaginary_figure_num=2, 
-                 rounding=decimal.ROUND_DOWN, 
                  is_hidden_imaginary_all_zero=True):
         # 単位あたりのByte数
         self.SetByteOfUnitSize(byte_size_of_unit)
         # 桁上がりするまでの桁数
         self.SetCarryFigureNum(integral_figure_num)
-        # 丸め方式
-        self.__rounding = rounding
         # 虚数部の表示桁数
         self.__img_figs = ['1.', '.1', '.01', '.001']
         self.SetImaginaryFigureNum(imaginary_figure_num)
@@ -127,23 +122,26 @@ class FileSize:
             if self.__integral_figure_num < len(str(bytesize // base_size)):
                 exponent = exponent + 1
                 continue
-            return "{0} {1}{2}".format(self.__GetValue(bytesize, base_size), size_unit_name, byte_unit_name)
+            return "{0} {1}{2}".format(self.__ImaginaryZeroSuppress(str(self.__GetValue(bytesize, base_size))), size_unit_name, byte_unit_name)
 
     """
-    ファイルサイズ値の文字列を取得する。
-    設定に応じた形式で。
-    @param  {decimal} bytesize は算出したいファイルサイズのByte数である。
+    ファイルサイズを取得する。虚数部を指定の少数桁だけ切り捨てて。
+    @param  {decimal} bytesize は値の文字列である。
     @param  {decimal} base_size はbytesizeを割る数である。
-    @return {string}  ファイルサイズ値の文字列
+    @return {decimal} ファイルサイズ。
     """
     def __GetValue(self, bytesize, base_size):
-        value = str(Decimal((bytesize / base_size)).quantize(Decimal(self.__img_figs[self.__img_fig]), rounding=self.__rounding))
-        if 0 == self.__img_fig:
-            return value
+        return decimal.Decimal((bytesize / base_size)).quantize(decimal.Decimal(self.__img_figs[self.__img_fig]), rounding=decimal.ROUND_DOWN)
+
+    """
+    虚数部がすべてゼロなら削除する。
+    @param  {string} valueStr は値の文字列である。
+    @return {string}  戻り値
+    """
+    def __ImaginaryZeroSuppress(self,valueStr):
+        if self.is_hidden_imaginary_all_zero:
+            zero = "." + ("0" * self.__img_fig)
+            return valueStr.replace(zero, "")
         else:
-            if self.is_hidden_imaginary_all_zero:
-                zero = "." + ("0" * self.__img_fig)
-                return value.replace(zero, "")
-            else:
-                return value
+            return valueStr
 

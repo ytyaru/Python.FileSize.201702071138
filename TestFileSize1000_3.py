@@ -1,6 +1,6 @@
 import unittest
 import FileSize
-from decimal import (Decimal, ROUND_DOWN)
+from decimal import Decimal
 class TestFileSize1000_3(unittest.TestCase):
     def test_999(self):
         self.__target = FileSize.FileSize(byte_size_of_unit=1000, integral_figure_num=3)

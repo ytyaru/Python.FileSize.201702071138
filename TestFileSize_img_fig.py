@@ -1,6 +1,6 @@
 import unittest
 import FileSize
-from decimal import (Decimal, ROUND_DOWN)
+from decimal import Decimal
 class TestFileSize_img_fig(unittest.TestCase):
 
     def test_int_fig_2(self):
