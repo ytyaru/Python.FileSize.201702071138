@@ -109,10 +109,10 @@ class FileSize:
     @param {integer} img_fig。0,1,2,3のいずれか。
     """
     def SetImaginaryFigureNum(self, img_fig):
-        if img_fig < len(self.__img_figs):
+        if 0 <= img_fig and img_fig < len(self.__img_figs):
             self.__img_fig = img_fig
         else:
-            raise Exception('虚数部の桁数は0〜{0}までの整数値のみ有効です。無効値: {1}'.format(len(self.img_figs) - 1, img_fig))
+            raise Exception('虚数部の桁数は0〜{0}までの整数値のみ有効です。無効値: {1}'.format(len(self.__img_figs) - 1, img_fig))
 
     """
     ファイルサイズを取得する。

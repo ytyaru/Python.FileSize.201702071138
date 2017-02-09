@@ -3,6 +3,28 @@ import FileSize
 from decimal import (Decimal, ROUND_DOWN)
 class TestFileSize_img_fig(unittest.TestCase):
 
+    def test_int_fig_2(self):
+        with self.assertRaises(Exception) as e:
+            int_fig=2;
+            self.__target = FileSize.FileSize(integral_figure_num=int_fig)
+            self.assertEqual('桁上がりするまでの桁数は3または4のみ有効です。無効値: {0}'.format(int_fig), e.exception.args[0])
+    def test_int_fig_5(self):
+        with self.assertRaises(Exception) as e:
+            int_fig=5;
+            self.__target = FileSize.FileSize(integral_figure_num=int_fig)
+            self.assertEqual('桁上がりするまでの桁数は3または4のみ有効です。無効値: {0}'.format(int_fig), e.exception.args[0])
+
+    def test_img_fig_nega(self):
+        with self.assertRaises(Exception) as e:
+            img_fig=-1;
+            self.__target = FileSize.FileSize(imaginary_figure_num=img_fig)
+            self.assertEqual('虚数部の桁数は0〜{0}までの整数値のみ有効です。無効値: {1}'.format(3, img_fig), e.exception.args[0])
+    def test_img_fig_5(self):
+        with self.assertRaises(Exception) as e:
+            img_fig=4;
+            self.__target = FileSize.FileSize(imaginary_figure_num=img_fig)
+            self.assertEqual('虚数部の桁数は0〜{0}までの整数値のみ有効です。無効値: {1}'.format(3, img_fig), e.exception.args[0])
+
     def test_9999_999KiB_4_3(self):
         unit=1024; int_fig=4; img_fig=3;
         self.__target = FileSize.FileSize(byte_size_of_unit=unit, integral_figure_num=int_fig, imaginary_figure_num=img_fig)
